@@ -1,6 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c5gwn2p80k5kl"]
+[gd_scene load_steps=9 format=3 uid="uid://csb6876kqm03l"]
 
-[ext_resource type="PackedScene" uid="uid://cdj4fggg6pcnn" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://dhgv2a8i4y48e" path="res://scripts/main.gd" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://c422yhb84wpbb" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://b8tjskexyma88" path="res://scenes/mob.tscn" id="2_sugp2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sgp6g"]
 size = Vector3(60, 2, 60)
@@ -8,13 +10,32 @@ size = Vector3(60, 2, 60)
 [sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
 size = Vector3(60, 2, 60)
 
-[node name="Node3D" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5qli"]
+albedo_color = Color(0.9999998, 0.5218341, 0.18704411, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0wfyh"]
+material = SubResource("StandardMaterial3D_o5qli")
+
+[sub_resource type="Curve3D" id="Curve3D_sugp2"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -15.00976, 0, -14.984229, 0, 0, 0, 0, 0, 0, 15.004068, 0, -14.984166, 0, 0, 0, 0, 0, 0, 15.004068, 0, 14.955369, 0, 0, 0, 0, 0, 0, -15.00976, 0, 15.029661, 0, 0, 0, 0, 0, 0, 36.622944, 0, -4.509044),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0wfyh")
+mob_scene = ExtResource("2_sugp2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.39068297, 0, 0.9205254, 0, 1, 0, -0.9205254, 0, -0.39068297, 2.650076, 18.202553, 7.443863)
+transform = Transform3D(-0.8660254, 0.43301278, -0.25, 0, 0.49999997, 0.86602545, 0.50000006, 0.75, -0.43301266, 1.9495802, 23.840153, 19.749743)
+light_energy = 0.835
+shadow_enabled = true
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 4
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("BoxShape3D_sgp6g")
@@ -23,10 +44,42 @@ shape = SubResource("BoxShape3D_sgp6g")
 mesh = SubResource("BoxMesh_o5qli")
 
 [node name="Player" parent="." instance=ExtResource("1_o5qli")]
+collision_mask = 6
 
 [node name="CameraPivot" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 19, 19)
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 9.817148, 9.756195)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, -1.405365, 8.280361)
 projection = 1
 size = 19.0
+
+[node name="Cylinders" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(0.75467527, 0.028115243, -0.6554959, 0, 0.99908143, 0.042852163, 0.65609854, -0.03233947, 0.75398207, -15, 1, -15)
+mesh = SubResource("CylinderMesh_0wfyh")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(0.75467527, 0.028115243, -0.6554959, 0, 0.99908143, 0.042852163, 0.65609854, -0.03233947, 0.75398207, 15, 1, -15)
+mesh = SubResource("CylinderMesh_0wfyh")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(0.75467527, 0.028115243, -0.6554959, 0, 0.99908143, 0.042852163, 0.65609854, -0.03233947, 0.75398207, 15, 1, 15)
+mesh = SubResource("CylinderMesh_0wfyh")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(0.75467527, 0.028115243, -0.6554959, 0, 0.99908143, 0.042852163, 0.65609854, -0.03233947, 0.75398207, -15, 0, 15)
+mesh = SubResource("CylinderMesh_0wfyh")
+
+[node name="SpawnPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_sugp2")
+
+[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath"]
+transform = Transform3D(-2.0702678e-06, 0, -0.9999992, 0, 1, 0, 0.9999992, 0, -2.0702678e-06, -15.00976, 0, -14.984229)
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]
