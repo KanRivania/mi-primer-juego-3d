@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxik8xuaiduqx"]
+
+[ext_resource type="AudioStream" uid="uid://8pnrey1glhh0" path="res://assets/music/18-01. Encounter.mp3" id="1_nbeep"]
+
+[node name="MusicPlayer" type="AudioStreamPlayer"]
+stream = ExtResource("1_nbeep")
+autoplay = true
+parameters/looping = true

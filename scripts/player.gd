@@ -9,6 +9,7 @@ var target_velocity = Vector3.ZERO
 
 func _physics_process(delta):
 	var direction = Vector3.ZERO
+		
 
 	if is_on_floor() and Input.is_action_just_pressed("jump"):
 		target_velocity.y = jump_impulse
@@ -27,10 +28,14 @@ func _physics_process(delta):
 		direction = direction.normalized()
 		# Setting the basis property will  affect the rotation of the node.
 		$Pivot.basis = Basis.looking_at(direction)
-	
+		$AnimationPlayer.speed_scale = 4
+	else:
+		$AnimationPlayer.speed_scale = 1
 	# Ground Velocity
 	target_velocity.x = direction.x * speed
 	target_velocity.z = direction.z * speed
+	
+	$Pivot.rotation.x = PI / 6 * velocity.y / jump_impulse
 	
 	# Vertical Velocity
 	if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity
@@ -38,6 +43,7 @@ func _physics_process(delta):
 	
 	# Moving the Character
 	velocity = target_velocity
+	move_and_slide()
 	
 	for index in range(get_slide_collision_count()):
 		var collision = get_slide_collision(index)
@@ -55,4 +61,12 @@ func _physics_process(delta):
 				target_velocity.y = bounce_impulse
 				break
 	
-	move_and_slide()
+	
+signal hit
+
+func die():
+	hit.emit()
+	queue_free()
+	
+func _on_mob_detector_body_entered(_body):
+	die()
